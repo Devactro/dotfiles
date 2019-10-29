@@ -100,7 +100,7 @@ bindsym $mod+3 workspace $workspace3
 bindsym $mod+4 workspace 4
 bindsym $mod+5 workspace 5
 bindsym $mod+6 workspace 6
-bindsym $mod+7 workspace 7
+bindsym $mod+7 workspace $workspace7
 bindsym $mod+8 workspace $workspace8
 bindsym $mod+9 workspace $workspace9
 bindsym $mod+0 workspace $workspace10
@@ -112,7 +112,7 @@ bindsym $mod+Shift+3 move container to workspace $workspace3
 bindsym $mod+Shift+4 move container to workspace 4
 bindsym $mod+Shift+5 move container to workspace 5
 bindsym $mod+Shift+6 move container to workspace 6
-bindsym $mod+Shift+7 move container to workspace 7
+bindsym $mod+Shift+7 move container to workspace $workspace7
 bindsym $mod+Shift+8 move container to workspace $workspace8
 bindsym $mod+Shift+9 move container to workspace $workspace9
 bindsym $mod+Shift+0 move container to workspace $workspace10
@@ -123,6 +123,22 @@ bindsym $mod+Shift+c reload
 bindsym $mod+Shift+r restart
 # exit i3 (logs you out of your X session)
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
+
+bindsym $mod+x mode "$mode_system"
+set $mode_system (l)ock, (e)xit, switch_(u)ser, (s)uspend, (h)ibernate, (r)eboot, (Shift+s)hutdown
+mode "$mode_system" {
+    bindsym l exec --no-startup-id i3exit lock, mode "default"
+    bindsym s exec --no-startup-id i3exit suspend, mode "default"
+    bindsym u exec --no-startup-id i3exit switch_user, mode "default"
+    bindsym e exec --no-startup-id i3exit logout, mode "default"
+    bindsym h exec --no-startup-id i3exit hibernate, mode "default"
+    bindsym r exec --no-startup-id i3exit reboot, mode "default"
+    bindsym Shift+s exec --no-startup-id i3exit shutdown, mode "default"
+
+    # exit system mode: "Enter" or "Escape"
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
@@ -143,7 +159,7 @@ mode "resize" {
         bindsym Up resize shrink height 10 px or 10 ppt
         bindsym Right resize grow width 10 px or 10 ppt
 
-        # back to normal: Enter or Escape
+	    # back to normal: Enter or Escape
         bindsym Return mode "default"
         bindsym Escape mode "default"
 }
@@ -160,8 +176,8 @@ set $inactive-text-color #676E7D
 set $urgent-bg-color     #E53935
 
 bar {
-        status_command i3blocks
-				position top
+		status_command i3blocks
+		position top
         colors {
                 background $bg-color
                 separator #757575
@@ -170,14 +186,17 @@ bar {
                 inactive_workspace $inactive-bg-color $inactive-bg-color $inactive-text-color
                 urgent_workspace   $urgent-bg-color   $urgent-bg-color   $text-color
         }
-#       font pango: monospace 11
+#		font pango: monospace 10
 }
 
 assign [class="Firefox-esr"] $workspace1
 for_window [class="Spotify"] move to workspace $workspace10
-assign [class="Wicd-client.py"] $workspace8
-assign [class="Pavucontrol"] $workspace8
+assign [class="Wicd-client.py"] $workspace7
+assign [class="Pavucontrol"] $workspace7
 assign [class="Lxterminal"] $workspace2
+assign [class="Steam"] $workspace8
+assign [class="Rambox"] $workspace9
+for_window [title="vim"] move to workspace $workspace3
 
 #autostart
 exec_always feh --bg-scale ~/Obrazy/i3_solarized.jpg
@@ -187,19 +206,21 @@ exec_always xautolock -time 10 -locker /bin/lock
 set $workspace1 "1: "
 set $workspace2 "2: "
 set $workspace3 "3: "
-set $workspace8 "8: "
-set $workspace9 "9: "
+set $workspace7 "7: "
+set $workspace8 "8: "
+set $workspace9 "9: "
 set $workspace10 "10: "
 
 #moje bindy
 bindsym $Mod+m exec pcmanfm
 bindsym $Mod+p exec firefox
-bindsym $Mod+o exec subl
 bindsym $Mod+u exec spotify
 bindsym $Mod+Shift+s exec systemctl suspend
 bindsym $Mod+shift+i exec bash /bin/lock
 bindsym $Mod+shift+w exec wicd-client
-
+bindsym $Mod+i exec steam
+bindsym $Mod+o exec lxterminal --command vim
+bindsym Print exec scrot '%Y-%m-%d-%s_screenshot$wx$h.jpg' -e 'mv $f ~/Obrazy/screenshoty'
 
 #audio
 bindsym XF86AudioRaiseVolume exec pactl set-sink-volume 0 +5% && pkill -RTMIN+10 i3blocks #increase sound volume
@@ -207,10 +228,9 @@ bindsym XF86AudioLowerVolume exec pactl set-sink-volume 0 -5% && pkill -RTMIN+10
 bindsym XF86AudioMute exec pactl set-sink-mute 0 toggle && pkill -RTMIN+10 i3blocks  # mute sound
 
 #media
-bindsym XF86AudioPlay exec playerctl play
-bindsym XF86AudioPause exec playerctl pause
 bindsym XF86AudioNext exec playerctl next
 bindsym XF86AudioPrev exec playerctl previous
+bindsym $Mod+Ctrl+space exec playerctl play-pause
 
 ### i3-gaps stuff ###
 
