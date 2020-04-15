@@ -1,8 +1,0 @@
-URxvt.transparent: true
-URxvt.scrollBar: false
-URxvt*background: #000000
-URxvt.foreground: white
-URxvt.tintColor: #443344
-URxvt*font: xft:Inconsolata:pixelsize=17:antialias=true:hinting=true
-URxvt*boldFont: xft:Inconsolata:bold:pixelsize=17:antialias=false:hinting=true
-
